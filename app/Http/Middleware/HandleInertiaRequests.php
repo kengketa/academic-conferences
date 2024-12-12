@@ -45,7 +45,7 @@ class HandleInertiaRequests extends Middleware
         }
         return array_merge(parent::share($request), [
             'user' => $user,
-            'isAdmin' => $user->roles->count() > 0 && $user->roles->contains('name', 'admin'),
+            'isAdmin' => $user && $user->roles->count() > 0 && $user->roles->contains('name', 'admin'),
             'role' => $user && $user->role ? $user->role->name : null,
             'flash' => [
                 'success' => Session::get('success'),
