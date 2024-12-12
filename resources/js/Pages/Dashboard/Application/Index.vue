@@ -15,7 +15,6 @@
                             fill-rule="evenodd"/>
                     </svg>
                 </label>
-
             </div>
             <div class="tabs tabs-bordered w-1/2 font-bold" role="tablist">
                 <input v-model="filterTab" :aria-label="'ผู้เสนอทั้งหมด('+totalApplicationCount+')'" class="tab"
@@ -32,7 +31,7 @@
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-8">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead class="text-gray-700 uppercase bg-gray-50 ">
-                <tr class="bg-gray-400 border-b">
+                <tr class="bg-gray-200 border-b">
                     <th class="px-6 py-3">ลำดับ</th>
                     <th class="px-6 py-3">ชื่องานประชุมวิชาการ</th>
                     <th class="px-6 py-3">การประชุมวิชาการ</th>
@@ -46,10 +45,9 @@
                     class="bg-white border-b">
                     <th class="text-center">{{ index + 1 }}</th>
                     <td class="px-6 py-4">
-                        <a :href="route('dashboard.applications.edit',application.id)" class="underline"
-                           target="_blank">
+                        <Link :href="route('dashboard.applications.edit',application.id)" class="underline">
                             {{ application.name }}
-                        </a>
+                        </Link>
                     </td>
                     <td>{{ application.type === 'local' ? 'ระดับชาติ' : 'ระดับนานาชาติ' }}</td>
                     <td>{{ application.proposer.full_name }}</td>

@@ -30,4 +30,19 @@ class ApplicationController extends Controller
             'doneApplicationCount' => $doneApplicationCount
         ]);
     }
+
+    public function edit(Request $request, Application $application)
+    {
+        $applicationData = fractal($application, new ApplicationTransformer())
+            ->includeProposer()
+            ->includeDean()
+            ->includeChairMan()
+            ->includePresident()
+            ->includeSecretary()
+            ->toArray();
+        return Inertia::render('Dashboard/Application/Edit')->with([
+            'application' => $applicationData,
+
+        ]);
+    }
 }
