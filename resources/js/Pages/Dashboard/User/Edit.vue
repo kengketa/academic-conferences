@@ -220,3 +220,13 @@ export default {
 };
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style>
+.multiselect__tags {
+    font-size: 19px !important;
+}
+
+.multiselect__tags-wrap > .multiselect__tag {
+    background: #a01d29 !important;
+}
+</style>
+
