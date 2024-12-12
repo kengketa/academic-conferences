@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
+
+    public function major()
+    {
+        return $this->belongsTo(Major::class);
+    }
 }

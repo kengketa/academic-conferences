@@ -14,10 +14,14 @@ class UserTransformer extends TransformerAbstract
         $data = [
             'id' => $user->id,
             'name' => $user->name,
+            'prefix' => $user->prefix,
             'first_name' => $user->first_name,
             'last_name' => $user->first_name,
             'email' => $user->email,
-            'tel' => $user->tel
+            'tel' => $user->tel,
+            'department_id' => $user->major ? $user->major->department->id : null,
+            'major_id' => $user->major ? $user->major->id : null,
+            'roles' => $user->roles,
         ];
         return $data;
     }

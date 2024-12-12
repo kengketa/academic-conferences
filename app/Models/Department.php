@@ -10,5 +10,9 @@ class Department extends Model
     use HasFactory;
 
     protected $fillable = ['name'];
-    
+
+    public function majors()
+    {
+        return $this->hasMany(Major::class);
+    }
 }

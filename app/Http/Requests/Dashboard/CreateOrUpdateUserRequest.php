@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateOrUpdateUserRequest extends FormRequest
 {
@@ -10,14 +11,16 @@ class CreateOrUpdateUserRequest extends FormRequest
     {
         $userId = request()->get('user_id');
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'institution' => ['nullable', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $userId],
-            'tel' => ['nullable', 'string', 'max:10'],
-            'role_id' => ['required', 'integer', 'exists:roles,id'],
-            'password' => ['nullable', 'string', 'min:6'],
+            'prefix' => ['nullable', 'string', 'max:20'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $userId],
+            'tel' => ['required', 'string', 'min:10', 'max:15'],
+            'roles.*.id' => ['exists:roles,id'],
+            'department_id' => ['nullable', 'exists:departments,id'],
+            'major_id' => ['nullable', 'exists:majors,id'],
+            'password' => ['nullable', 'string'],
         ];
-
         return $rules;
     }
 }

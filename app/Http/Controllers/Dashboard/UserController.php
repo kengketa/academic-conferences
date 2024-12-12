@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use App\Actions\Dashboard\SaveUserAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\CreateOrUpdateUserRequest;
+use App\Http\Transformers\DepartmentTransformer;
+use App\Models\Department;
 use App\Models\Role;
 use App\Http\Transformers\UserTransformer;
 use App\Models\User;
@@ -26,9 +28,12 @@ class UserController extends Controller
     {
         $userData = fractal($user, new UserTransformer())->toArray();
         $roles = Role::all()->toArray();
+        $departments = Department::all();
+        $departmentData = fractal($departments, new DepartmentTransformer())->toArray()['data'];
         return Inertia::render('Dashboard/User/Edit')->with([
             'user' => $userData,
             'roles' => $roles,
+            'departments' => $departmentData,
         ]);
     }
 
