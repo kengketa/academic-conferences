@@ -172,17 +172,22 @@ class PageController extends Controller
         return Inertia::render('Auth/Register');
     }
 
-    public function storeRegister(Request $request, RegisterUserAction $userAction)
+    public function storeRegister(Request $request, SaveUserAction $userAction)
     {
         $request->validate([
-            'name' => ['required', 'string'],
-            'institution' => ['required', 'string'],
+            'prefix' => ['nullable', 'string'],
+            'first_name' => ['required', 'string'],
+            'last_name' => ['required', 'string'],
             'tel' => ['required', 'string'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'confirmed'],
             'terms' => ['required', 'accepted'],
+            'department_id' => ['required', 'exists:departments,id'],
+            'major_id' => ['required', 'exists:majors,id'],
         ]);
-        $newUser = $userAction->execute(new User(), $request->all());
+        $req = $request->all();
+        $req['default_roles'] = [Role::where('name', 'proposer')->first()->id];
+        $newUser = $userAction->execute(new User(), $req);
         Auth::login($newUser);
         return redirect()->route('index');
     }

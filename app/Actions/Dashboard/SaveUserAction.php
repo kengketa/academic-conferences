@@ -18,6 +18,7 @@ class SaveUserAction
         $this->user = $user;
         $this->user->major_id = $data['major_id'];
         $this->user->prefix = $data['prefix'];
+        $this->user->name = $data['first_name'] . ' ' . $data['last_name'];
         $this->user->first_name = $data['first_name'];
         $this->user->last_name = $data['last_name'];
         $this->user->email = $data['email'];
@@ -29,6 +30,9 @@ class SaveUserAction
         if (isset($data['roles'])) {
             $roleIds = Arr::flatten($data['roles']);
             $this->user->roles()->sync($roleIds);
+        }
+        if (isset($data['default_roles'])) {
+            $this->user->roles()->sync($data['default_roles']);
         }
         $this->user = $this->user->fresh();
         return $this->user;
