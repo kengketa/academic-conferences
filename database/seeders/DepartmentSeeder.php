@@ -25,6 +25,5 @@ class DepartmentSeeder extends Seeder
         Department::factory()->create([
             'name' => 'คณะวิทยาศาสตร์และเทคโนโลยี'
         ]);
-        //Department::factory()->count(20)->create();
     }
 }
