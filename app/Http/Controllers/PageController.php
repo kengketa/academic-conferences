@@ -29,7 +29,7 @@ class PageController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::user() && Auth::user()->role->name == 'admin') {
+        if (Auth::user()) {
             return redirect()->route('dashboard.index');
         }
         $performance = Performance::where('user_id', Auth::id())->first();
@@ -156,7 +156,7 @@ class PageController extends Controller
         $user = Auth::user();
         $performanceCount = Performance::count();
         $publishedPerformanceCount = Performance::where('is_published', true)->count();
-        $unpublishedPerformanceCount = Performance::where('is_published', false)->count();  
+        $unpublishedPerformanceCount = Performance::where('is_published', false)->count();
         $performance = Performance::where('is_published', true)->orderBy('updated_at', 'desc')->get();
         $performanceData = fractal($performance, new PerformanceTransformer())->toArray()['data'];
         return Inertia::render('Dashboard/Index')->with([

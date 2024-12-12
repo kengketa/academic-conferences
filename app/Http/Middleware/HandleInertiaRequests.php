@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class HandleInertiaRequests extends Middleware
@@ -41,7 +41,7 @@ class HandleInertiaRequests extends Middleware
     {
         $user = null;
         if (Auth::user()) {
-            $user = User::with('role')->where('id', Auth::user()->id)->first();
+            $user = User::where('id', Auth::user()->id)->first();
         }
         return array_merge(parent::share($request), [
             'user' => $user,

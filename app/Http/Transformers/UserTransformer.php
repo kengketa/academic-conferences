@@ -14,9 +14,8 @@ class UserTransformer extends TransformerAbstract
         $data = [
             'id' => $user->id,
             'name' => $user->name,
-            'institution' => $user->institution,
-            'role_id' => $user->role_id,
-            'role' => $user->role->toArray(),
+            'first_name' => $user->first_name,
+            'last_name' => $user->first_name,
             'email' => $user->email,
             'tel' => $user->tel
         ];
