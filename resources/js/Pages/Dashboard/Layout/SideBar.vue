@@ -56,12 +56,18 @@ export default {
                     icon: UserIcon,
                     routeGroup: 'dashboard.users.*',
                 },
-                performances: {
-                    name: 'Performance',
-                    href: this.route('dashboard.performances.index'),
-                    icon: TicketIcon,
-                    routeGroup: 'dashboard.performances.*',
+                applications: {
+                    name: 'Application',
+                    href: this.route('dashboard.applications.index'),
+                    icon: UserIcon,
+                    routeGroup: 'dashboard.applications.*',
                 },
+                // performances: {
+                //     name: 'Performance',
+                //     href: this.route('dashboard.performances.index'),
+                //     icon: TicketIcon,
+                //     routeGroup: 'dashboard.performances.*',
+                // },
 
                 // professors: {
                 //     name: 'Professor',
@@ -84,7 +90,9 @@ export default {
             const navs = [];
             navs.push(this.navs.dashboard);
             navs.push(this.navs.users);
-            navs.push(this.navs.performances);
+            navs.push(this.navs.applications);
+
+            //navs.push(this.navs.performances);
             return navs;
         }
     },

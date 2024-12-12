@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -51,4 +52,47 @@ class Application extends Model
         'president_commented_at' => 'datetime',
         'secretary_commented_at' => 'datetime',
     ];
+
+    public function scopeFilter(Builder $query, array $filters): void
+    {
+        if (isset($filters['tab']) && $filters['tab'] !== 'all' && $filters['tab'] === 'pending') {
+            $query->where('status', '<', 6);
+        }
+        if (isset($filters['tab']) && $filters['tab'] !== 'all' && $filters['tab'] === 'done') {
+            $query->where('status', '=', 6);
+        }
+        if (!empty($filters['search'])) {
+            $query->where(function ($query) use ($filters) {
+                $query->where('name', 'like', '%' . $filters['search'] . '%')
+                    ->orWhereHas('proposedBy', function ($query) use ($filters) {
+                        $query->where('name', 'like', '%' . $filters['search'] . '%');
+                    });
+            });
+        }
+    }
+    
+    public function proposedBy()
+    {
+        return $this->belongsTo(User::class, 'proposed_by');
+    }
+
+    public function deanCommentedBy()
+    {
+        return $this->belongsTo(User::class, 'dean_commented_by');
+    }
+
+    public function chairmanCommentedBy()
+    {
+        return $this->belongsTo(User::class, 'chairman_commented_by');
+    }
+
+    public function presidentCommentedBy()
+    {
+        return $this->belongsTo(User::class, 'president_commented_by');
+    }
+
+    public function secretaryCommentedBy()
+    {
+        return $this->belongsTo(User::class, 'secretary_commented_by');
+    }
 }
