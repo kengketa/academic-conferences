@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('major_id')->nullable();
             $table->string('name');
-            $table->string('prefix');
+            $table->string('prefix')->nullable();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();

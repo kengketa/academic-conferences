@@ -14,6 +14,10 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         Role::factory()->create([
+            'name' => 'admin',
+            'name_th' => 'แอดมิน'
+        ]);
+        Role::factory()->create([
             'name' => 'proposer',
             'name_th' => 'ผู้เสนอ'
         ]);
