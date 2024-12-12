@@ -67,10 +67,13 @@ class User extends Authenticatable
         SendForgotPasswordEmail::dispatch($this, $token);
     }
 
-    public function role()
+    public function roles()
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsToMany(Role::class);
     }
 
-
+    public function major()
+    {
+        return $this->belongsTo(Major::class);
+    }
 }

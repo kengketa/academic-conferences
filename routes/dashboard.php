@@ -6,11 +6,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\PerformanceController;
 
 
+//admins zone
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::prefix('dashboard')->as('dashboard.')->group(function () {
         Route::get('/', [PageController::class, 'dashboard'])->name('index');
-
         Route::resource('users', UserController::class);
+    });
+});
+
+
+//users zone
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('dashboard')->as('dashboard.')->group(function () {
+        Route::get('/', [PageController::class, 'dashboard'])->name('index');
         Route::resource('performances', PerformanceController::class);
         Route::post('performances/{performance}/toggle-publish', [PerformanceController::class, 'togglePublish'])
             ->name('performances.toggle_publish');

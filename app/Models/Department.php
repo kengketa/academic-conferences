@@ -11,8 +11,8 @@ class Department extends Model
 
     protected $fillable = ['name'];
 
-    public function professors()
+    public function majors()
     {
-        return $this->hasMany(Professor::class, 'department_id');
+        return $this->hasMany(Major::class);
     }
 }

@@ -13,9 +13,11 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('role_id')->nullable();
+            $table->unsignedBigInteger('major_id')->nullable();
             $table->string('name');
-            $table->string('institution')->nullable();
+            $table->string('prefix')->nullable();
+            $table->string('first_name');
+            $table->string('last_name');
             $table->string('email')->unique();
             $table->string('tel')->nullable();
             $table->timestamp('email_verified_at')->nullable();
@@ -23,8 +25,9 @@ return new class extends Migration {
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->timestamps();
+
+            $table->foreign('major_id')->references('id')->on('majors')->onDelete('set null');
         });
     }
 

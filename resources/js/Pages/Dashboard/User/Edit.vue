@@ -1,55 +1,50 @@
 <template>
     <Layout>
         <form @submit.prevent="submit">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="col-span-2">
-                    <div>
-                        <label class="form-control w-full">
-                            <div class="label">
-                                <span class="label-text">สิทธ์</span>
-                            </div>
-                            <select v-model="form.role_id" class="select select-bordered w-full uppercase">
-                                <option value="">เลือกสิทธิ์</option>
-                                <option v-for="role in roles" :key="role.id" :value="role.id">
-                                    <p class="uppercase">{{ role.name }}</p>
-                                </option>
-                            </select>
-                        </label>
-                        <div v-if="$page.props.errors.role_id" class="text-red-500 text-sm">
-                            {{ $page.props.errors.role_id }}
-                        </div>
-                    </div>
-                </div>
+            <div class="grid grid-cols-3 gap-4">
                 <div>
                     <label class="form-control w-full">
                         <div class="label">
-                            <span class="label-text">ชื่อผู้ติดต่อ</span>
+                            <span class="label-text">คำนำหน้า</span>
                         </div>
-                        <input v-model="form.name" class="input input-bordered w-full"
-                               placeholder="ชื่อผู้ติดต่อ"
+                        <input v-model="form.prefix" class="input input-bordered w-full"
+                               placeholder="คำนำหน้า"
                                type="text"/>
                     </label>
-                    <div v-if="$page.props.errors.name" class="text-red-500 text-sm">
-                        {{ $page.props.errors.name }}
+                    <div v-if="$page.props.errors.prefix" class="text-red-500 text-sm">
+                        {{ $page.props.errors.prefix }}
                     </div>
                 </div>
                 <div>
                     <label class="form-control w-full">
                         <div class="label">
-                            <span class="label-text">หน่วยงาน</span>
+                            <span class="label-text">ชื่อจริง</span>
                         </div>
-                        <input v-model="form.institution" class="input input-bordered w-full"
-                               placeholder="ชื่อผู้ติดต่อ"
+                        <input v-model="form.first_name" class="input input-bordered w-full"
+                               placeholder="ชื่อจริง"
                                type="text"/>
                     </label>
-                    <div v-if="$page.props.errors.institution" class="text-red-500 text-sm">
-                        {{ $page.props.errors.institution }}
+                    <div v-if="$page.props.errors.first_name" class="text-red-500 text-sm">
+                        {{ $page.props.errors.first_name }}
                     </div>
                 </div>
                 <div>
                     <label class="form-control w-full">
                         <div class="label">
-                            <span class="label-text">เมลล์</span>
+                            <span class="label-text">นามสกุล</span>
+                        </div>
+                        <input v-model="form.last_name" class="input input-bordered w-full"
+                               placeholder="นามสกุล"
+                               type="text"/>
+                    </label>
+                    <div v-if="$page.props.errors.last_name" class="text-red-500 text-sm">
+                        {{ $page.props.errors.last_name }}
+                    </div>
+                </div>
+                <div>
+                    <label class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">อีเมล</span>
                         </div>
                         <input v-model="form.email" class="input input-bordered w-full"
                                placeholder="อีเมล"
@@ -59,30 +54,87 @@
                         {{ $page.props.errors.email }}
                     </div>
                 </div>
+
+                <!-- Telephone -->
                 <div>
                     <label class="form-control w-full">
                         <div class="label">
-                            <span class="label-text">โทร</span>
+                            <span class="label-text">เบอร์โทรศัพท์</span>
                         </div>
                         <input v-model="form.tel" class="input input-bordered w-full"
                                placeholder="เบอร์โทรศัพท์"
-                               type="text"/>
+                               type="tel"/>
                     </label>
                     <div v-if="$page.props.errors.tel" class="text-red-500 text-sm">
                         {{ $page.props.errors.tel }}
                     </div>
                 </div>
+
+                <!-- Password -->
                 <div>
                     <label class="form-control w-full">
                         <div class="label">
-                            <span class="label-text">Password</span>
+                            <span class="label-text">รหัสผ่าน</span>
                         </div>
                         <input v-model="form.password" class="input input-bordered w-full"
-                               placeholder="password"
-                               type="text"/>
+                               placeholder="รหัสผ่าน"
+                               type="password"/>
                     </label>
                     <div v-if="$page.props.errors.password" class="text-red-500 text-sm">
                         {{ $page.props.errors.password }}
+                    </div>
+                </div>
+                <!-- Department -->
+                <div>
+                    <label class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">คณะ</span>
+                        </div>
+                        <select v-model="form.department_id" class="select select-bordered w-full">
+                            <option value="">เลือกคณะ</option>
+                            <option v-for="(department,index) in departments" :key="index" :value="department.id">
+                                {{ department.name }}
+                            </option>
+                        </select>
+                    </label>
+                    <div v-if="$page.props.errors.department" class="text-red-500 text-sm">
+                        {{ $page.props.errors.department }}
+                    </div>
+                </div>
+
+                <!-- Major -->
+                <div :class="availableMajors.length === 0 ?'hidden':'block'">
+                    <label class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">สาขา</span>
+                        </div>
+                        <select v-model="form.major_id" class="select select-bordered w-full">
+                            <option value="">เลือกสาขา</option>
+                            <option v-for="(major,index) in availableMajors" :key="index"
+                                    :value="major.id">
+                                {{ major.name }}
+                            </option>
+                        </select>
+                    </label>
+                    <div v-if="$page.props.errors.major" class="text-red-500 text-sm">
+                        {{ $page.props.errors.major }}
+                    </div>
+                </div>
+                <!-- Roles (Multi-Select) -->
+                <div>
+                    <label class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">สิทธ์</span>
+                        </div>
+                        <multiselect v-model="form.roles" :max-height="150"
+                                     :multiple="true"
+                                     :options="roles" :taggable="true"
+                                     label="name" placeholder="Search or add a tag"
+                                     tag-placeholder="Add this as new tag" track-by="id"
+                                     @tag="addTag"></multiselect>
+                    </label>
+                    <div v-if="$page.props.errors.roles" class="text-red-500 text-sm">
+                        {{ $page.props.errors.roles }}
                     </div>
                 </div>
             </div>
@@ -99,10 +151,11 @@ import {Inertia} from "@inertiajs/inertia";
 import {Link, router} from "@inertiajs/vue3";
 import {useForm} from '@inertiajs/inertia-vue3';
 import AnnouncementForm from "@/Pages/Dashboard/Announcement/AnnouncementForm.vue";
+import Multiselect from 'vue-multiselect'
 
 export default {
     name: "UserEdit",
-    components: {Layout, Link},
+    components: {Layout, Link, Multiselect},
     props: {
         user: {
             type: Object,
@@ -112,39 +165,58 @@ export default {
             type: Array,
             required: true
         },
+        departments: {
+            type: Array,
+            required: true
+        },
         errors: Object,
-    },
-    mounted() {
     },
     data() {
         return {
             submitting: false,
-            form: useForm({
-                name: this.user.name ?? "",
-                institution: this.user.institution,
+            form: {
+                _method: 'patch',
+                user_id: this.user.id,
+                prefix: this.user.prefix ?? "",
+                first_name: this.user.first_name ?? "",
+                last_name: this.user.last_name ?? "",
                 email: this.user.email,
                 tel: this.user.tel,
-                role_id: this.user.role_id,
+                roles: this.user.roles,
+                department_id: this.user.department_id ?? "",
+                major_id: this.user.major_id ?? "",
                 password: null
-            }),
+            },
         };
     },
+    mounted() {
+    },
+
     methods: {
+        addTag(newTag) {
+
+        },
         submit() {
             this.submitting = true;
             const url = this.route('dashboard.users.update', this.user.id);
-            router.post(url, {
-                _method: 'patch',
-                user_id: this.user.id,
-                name: this.form.name,
-                institution: this.form.institution,
-                email: this.form.email,
-                tel: this.form.tel,
-                role_id: this.form.role_id,
-                password: this.form.password
+            router.post(url, this.form, {
+                onError: () => {
+                    this.submitting = false;
+
+                }
             });
         },
     },
-    watch: {}
+    watch: {},
+    computed: {
+        availableMajors() {
+            if (this.form.department_id === null || this.form.department_id === "") {
+                return [];
+            }
+            const foundDepartment = this.departments.find(dep => dep.id === this.form.department_id);
+            return foundDepartment.majors;
+        }
+    }
 };
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

@@ -17,11 +17,12 @@ class Role
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
+        $user = Auth::user();
         if (!Auth::check()) {
             return redirect('/login'); // Redirect to login if user is not authenticated
         }
         foreach ($roles as $role) {
-            if (Auth::user()->role && Auth::user()->role->name === $role) {
+            if ($user->roles->count() > 0 && $user->roles->contains('name', 'admin')) {
                 return $next($request); // User has the required role, proceed
             }
         }

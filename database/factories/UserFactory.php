@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Major;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,10 +22,14 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $firstName = $this->faker->firstName();
+        $lastName = $this->faker->lastName();
         return [
-            'role_id' => Role::where('name', 'user')->first()->id,
-            'name' => $this->faker->name(),
-            'institution' => $this->faker->company,
+            'name' => $firstName . ' ' . $lastName,
+            'major_id' => Major::inRandomOrder()->first()->id ?? Major::factory(),
+            'prefix' => $this->faker->randomElement(['ดร.', 'ผศ.ดร.', 'รศ.ดร.']),
+            'first_name' => $firstName,
+            'last_name' => $lastName,
             'email' => $this->faker->unique()->safeEmail(),
             'tel' => $this->faker->numerify('0#########'),
             'email_verified_at' => now(),

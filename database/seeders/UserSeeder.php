@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Role;
@@ -14,19 +15,29 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'role_id' => Role::where('name', 'admin')->first()->id,
-            'name' => 'admin',
-            'email' => 'admin@admin.com'
+        $admin = User::factory()->create([
+            'name' => 'admin admin',
+            'first_name' => 'admin',
+            'last_name' => 'admin',
+            'email' => 'admin@admin.com',
+            'prefix' => null,
+            'major_id' => null,
         ]);
-        User::factory()->create([
-            'role_id' => Role::where('name', 'user')->first()->id,
-            'name' => 'คุณเอ',
-            'institution' => 'มหาวิทยาลัยนเรศวร',
-            'tel' => '0976968696',
-            'email' => 'test@test.com'
+        $admin->roles()->attach([
+            1 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
-
-        User::factory()->count(100)->create();
+        $users = User::factory()->count(20)->create();
+        $roles = Role::pluck('id')->toArray();
+        foreach ($users as $user) {
+            $randomRoles = array_rand(array_flip($roles), rand(1, 3));
+            if (!is_array($randomRoles)) {
+                $randomRoles = [$randomRoles];
+            }
+            foreach ($randomRoles as $roleId) {
+                $user->roles()->attach([
+                    $roleId => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+                ]);
+            }
+        }
     }
 }

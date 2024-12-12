@@ -16,6 +16,7 @@ class DepartmentTransformer extends TransformerAbstract
         $data = [
             'id' => $department->id,
             'name' => $department->name,
+            'majors' => $department->majors->toArray()
         ];
         return $data;
     }
