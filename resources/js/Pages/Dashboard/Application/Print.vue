@@ -124,9 +124,9 @@
                     </section>
                 </div>
                 <div class="w-full">
-                    <!--                    <div v-for="(doc,index) in  application.documents.data ">-->
-                    <!--                        <iframe v-if="doc.url" :src="doc.url" height="500" width="100%"></iframe>-->
-                    <!--                    </div>-->
+                    <div v-for="(doc,index) in  application.documents.data ">
+                        <VuePdfEmbed :source="doc.url" annotation-layer text-layer/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -138,12 +138,18 @@ import {Link} from "@inertiajs/vue3";
 import {nextTick} from "vue";
 import {useVueToPrint} from "vue-to-print";
 import SignatureModal from "@/Pages/Components/SignatureModal.vue";
+import VuePdfEmbed from 'vue-pdf-embed'
+
+// optional styles
+import 'vue-pdf-embed/dist/styles/annotationLayer.css'
+import 'vue-pdf-embed/dist/styles/textLayer.css'
 
 export default {
     name: "PrintApplication",
     components: {
         SignatureModal,
         Link,
+        VuePdfEmbed
     },
     props: {
         application: {
