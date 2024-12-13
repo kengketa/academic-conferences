@@ -4,9 +4,12 @@ namespace App\Actions\Dashboard;
 
 use App\Models\Application;
 use App\Models\Subject;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\ApplicationUpdated;
+use Illuminate\Support\Facades\Mail;
 
 class SaveApplicationAction
 {
@@ -62,6 +65,8 @@ class SaveApplicationAction
         $this->deleteDocuments(isset($data['to_delete_documents']) ? $data['to_delete_documents'] : []);
         $this->uploadDocuments($data['documents']);
 
+        $this->notifyUser($data['next_status']);
+
         return $this->application;
     }
 
@@ -82,6 +87,26 @@ class SaveApplicationAction
             if ($document instanceof UploadedFile) {
                 $this->application->addMedia($document)->toMediaCollection(Application::MEDIA_COLLECTION_DOCUMENTS);
             }
+        }
+    }
+
+    private function notifyUser($status)
+    {
+        switch ($status) {
+            case 2:
+                Mail::to($this->application->proposedBy->email)->send(new ApplicationUpdated($this->application));
+            case 3:
+//                $departmentId = $this->application->major->department->id;
+//                $dean = User::whereHas('major.department', function ($query) use ($departmentId) {
+//                    $query->where('id', $departmentId);
+//                });
+//                Mail::to($dean->email)->send(new ApplicationUpdated($this->application));
+            case 4:
+                Mail::to('email doctor kamonwan')->send(new ApplicationUpdated($this->application));
+            case 5:
+                Mail::to('email president')->send(new ApplicationUpdated($this->application));
+            case 6:
+                Mail::to('email doctor kamonwan')->send(new ApplicationUpdated($this->application));
         }
     }
 }
