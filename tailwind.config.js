@@ -19,8 +19,9 @@ export default {
     theme: {
         extend: {
             fontFamily: {
+                sans: ['Angsana New', ...defaultTheme.fontFamily.sans],
                 // sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-                sans: ['Niramit', ...defaultTheme.fontFamily.sans],
+                //sans: ['Niramit', ...defaultTheme.fontFamily.sans],
             },
         },
     },

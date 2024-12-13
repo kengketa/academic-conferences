@@ -219,7 +219,7 @@ export default {
 
     .print-page {
         page-break-before: always; /* Ensure a proper break */
-        margin-top: 1cm; /* Add space on new pages */
+        margin-top: 0.5cm; /* Add space on new pages */
     }
 
     .no-print {
