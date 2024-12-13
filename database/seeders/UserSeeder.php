@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Department;
+use App\Models\Major;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -26,6 +28,59 @@ class UserSeeder extends Seeder
         $admin->roles()->attach([
             1 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
+
+        $major = Major::inRandomOrder()->first();
+        $proposer = User::factory()->create([
+            'email' => 'proposer@mail.com',
+            'major_id' => $major->id,
+            'first_name' => 'proposer',
+            'last_name' => 'proposer',
+        ]);
+        $proposer->roles()->attach([
+            2 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+        ]);
+
+
+        $randomMajorInTheSameDepartment = Major::whereHas('department', function ($query) use ($major) {
+            $query->where('id', $major->department->id);
+        })->inRandomOrder()->first();
+        $dean = User::factory()->create([
+            'email' => 'dean@mail.com',
+            'major_id' => $randomMajorInTheSameDepartment,
+            'first_name' => 'dean',
+            'last_name' => 'dean',
+        ]);
+        $dean->roles()->attach([
+            2 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            3 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()], // dean
+        ]);
+
+
+        $chairman = User::factory()->create([
+            'email' => 'kamonwan@mail.com',
+            'major_id' => $randomMajorInTheSameDepartment,
+            'first_name' => 'kamonwan',
+            'last_name' => 'kamonwan',
+        ]);
+        $chairman->roles()->attach([
+            2 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            4 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            6 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+        ]);
+
+
+        $president = User::factory()->create([
+            'email' => 'president@mail.com',
+            'major_id' => $randomMajorInTheSameDepartment,
+            'first_name' => 'president',
+            'last_name' => 'president',
+        ]);
+        $president->roles()->attach([
+            2 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            5 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+        ]);
+
+
         $users = User::factory()->count(20)->create();
         $roles = Role::pluck('id')->toArray();
         foreach ($users as $user) {

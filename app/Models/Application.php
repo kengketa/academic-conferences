@@ -5,10 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Application extends Model
+class Application extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
+
+    public const MEDIA_COLLECTION_DOCUMENTS = 'documents';
 
     protected $fillable = [
         'name',
@@ -53,8 +61,30 @@ class Application extends Model
         'secretary_commented_at' => 'datetime',
     ];
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(self::MEDIA_COLLECTION_DOCUMENTS);
+    }
+
     public function scopeFilter(Builder $query, array $filters): void
     {
+        $user = Auth::user();
+        $userDepartmentId = $user?->major?->department?->id;
+        if ($userDepartmentId && $user->roles->contains('name', 'dean')) {
+            $query->whereHas('proposedBy', function ($query) use ($userDepartmentId) {
+                $query->whereHas('major', function ($query) use ($userDepartmentId) {
+                    $query->where('department_id', $userDepartmentId);
+                });
+            });
+        }
+        if ($user->roles->contains('name', 'proposer') &&
+            !$user->roles->contains('name', 'dean') &&
+            !$user->roles->contains('name', 'chairman') &&
+            !$user->roles->contains('name', 'president') &&
+            !$user->roles->contains('name', 'secretary')
+        ) {
+            $query->where('proposed_by', $user->id);
+        }
         if (isset($filters['tab']) && $filters['tab'] !== 'all' && $filters['tab'] === 'pending') {
             $query->where('status', '<', 6);
         }
@@ -70,7 +100,7 @@ class Application extends Model
             });
         }
     }
-    
+
     public function proposedBy()
     {
         return $this->belongsTo(User::class, 'proposed_by');
