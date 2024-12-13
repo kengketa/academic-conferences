@@ -7,6 +7,7 @@ use App\Http\Requests\Dashboard\CreateOrUpdateApplicationRequest;
 use App\Http\Transformers\ApplicationTransformer;
 use App\Models\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -32,6 +33,17 @@ class ApplicationController extends Controller
             'pendingApplicationCount' => $pendingApplicationCount,
             'doneApplicationCount' => $doneApplicationCount
         ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Dashboard/Application/Create');
+    }
+
+    public function store(CreateOrUpdateApplicationRequest $request, saveApplicationAction $action)
+    {
+        $action->execute(new Application(), $request->validated());
+        return redirect()->route('dashboard.applications.index')->with('success', 'Application created.');
     }
 
     public function edit(Request $request, Application $application)

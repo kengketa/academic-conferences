@@ -30,7 +30,7 @@ class CreateOrUpdateApplicationRequest extends FormRequest
             'president_signature' => ['nullable', 'string'],
             'secretary_comment' => ['nullable', 'string'],
             'secretary_signature' => ['nullable', 'string'],
-            'current_status' => ['required', 'in:2,3,4,5,6'],
+            'current_status' => ['required', 'in:1,2,3,4,5,6'],
             'next_status' => ['required', 'in:2,3,4,5,6'],
             'documents' => ['required', 'array', 'min:1'],
             'documents.*' => ['required', 'mimes:pdf,ppt,pptx,doc,docx,xls,xlsx', 'max:102400'],
@@ -38,6 +38,18 @@ class CreateOrUpdateApplicationRequest extends FormRequest
         ];
         if (request()->method == 'PATCH') {
             $rules['documents.*'] = ['nullable'];
+        }
+        if ($this->input('next_status') == 3) {
+            $rules['dean_comment'] = ['required', 'string'];
+        }
+        if ($this->input('next_status') == 4) {
+            $rules['chairman_comment'] = ['required', 'string'];
+        }
+        if ($this->input('next_status') == 5) {
+            $rules['president_comment'] = ['required', 'string'];
+        }
+        if ($this->input('next_status') == 5) {
+            $rules['secretary_comment'] = ['required', 'string'];
         }
         return $rules;
     }

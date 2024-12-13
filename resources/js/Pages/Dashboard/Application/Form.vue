@@ -260,7 +260,7 @@
                 <div class="col-span-8"></div>
                 <div class="col-span-4 flex flex-col items-center justify-center">
                     <SignatureModal v-model="showProposerSignaturePad" @submit="handleSubmitProposerSignature"/>
-                    <img :src="form.proposer_signature" class="w-36 h-36">
+                    <img v-if="form.proposer_signature !== null" :src="form.proposer_signature" class="w-36 h-36">
                     <button class="btn btn-primary btn-sm ml-4" type="button" @click="showProposerSignaturePad=true">
                         ลงชื่อ
                     </button>
@@ -271,9 +271,9 @@
                     <p>วันที่ {{ application.created_at }}</p>
                 </div>
             </div>
-            <hr class="border-2 my-4">
+            <hr v-if="application.id !== undefined" class="border-2 my-4">
             <section class="space-y-4 ">
-                <h2 class="text-lg font-semibold mb-3">ส่วนที่ 3 การพิจารณา</h2>
+                <h2 v-if="application.id !== undefined" class="text-lg font-semibold mb-3">ส่วนที่ 3 การพิจารณา</h2>
                 <div v-if="application.status >=2" class="mb-4">
                     <label class="block text-sm font-medium">
                         3.1) ความเห็นคณบดี
@@ -290,7 +290,7 @@
                     <div class="col-span-8"></div>
                     <div class="col-span-4 flex flex-col items-center justify-center">
                         <SignatureModal v-model="showDeanSignaturePad" @submit="handleSubmitDeanSignature"/>
-                        <img :src="form.dean_signature" class="w-36 h-36">
+                        <img v-if="form.dean_signature" :src="form.dean_signature" class="w-36 h-36">
                         <button class="btn btn-primary btn-sm ml-4" type="button" @click="showDeanSignaturePad=true">
                             ลงชื่อ
                         </button>
@@ -316,7 +316,7 @@
                     <div class="col-span-8"></div>
                     <div class="col-span-4 flex flex-col items-center">
                         <SignatureModal v-model="showChairmanSignaturePad" @submit="handleSubmitChairmanSignature"/>
-                        <img :src="form.chairman_signature" class="w-36 h-36">
+                        <img v-if="form.chairman_signature" :src="form.chairman_signature" class="w-36 h-36">
                         <button class="btn btn-primary btn-sm ml-4" type="button"
                                 @click="showChairmanSignaturePad=true">
                             ลงชื่อ
@@ -343,7 +343,7 @@
                     <div class="col-span-8"></div>
                     <div class="col-span-4 flex flex-col items-center justify-center">
                         <SignatureModal v-model="showPresidentSignaturePad" @submit="handleSubmitPresidentSignature"/>
-                        <img :src="form.president_signature" class="w-36 h-36">
+                        <img v-if="form.president_signature" :src="form.president_signature" class="w-36 h-36">
                         <button class="btn btn-primary btn-sm ml-4" type="button"
                                 @click="showPresidentSignaturePad=true">
                             ลงชื่อ
@@ -370,7 +370,7 @@
                     <div class="col-span-8"></div>
                     <div class="col-span-4 flex flex-col items-center justify-center">
                         <SignatureModal v-model="showSecretarySignaturePad" @submit="handleSubmitSecretarySignature"/>
-                        <img :src="form.secretary_signature" class="w-36 h-36">
+                        <img v-if="form.secretary_signature" :src="form.secretary_signature" class="w-36 h-36">
                         <button class="btn btn-primary btn-sm ml-4" type="button"
                                 @click="showSecretarySignaturePad=true">
                             ลงชื่อ
@@ -418,42 +418,88 @@ export default {
                 other_info: this.application.other_info,
                 documents: [],
                 to_delete_documents: [],
-                proposer_signature: this.application.proposer_signature,
-                dean_comment: this.application.dean_comment,
-                dean_signature: this.application.dean_signature,
-                chairman_comment: this.application.chairman_comment,
-                chairman_signature: this.application.chairman_signature,
-                president_comment: this.application.president_comment,
-                president_signature: this.application.president_signature,
-                secretary_comment: this.application.secretary_comment,
-                secretary_signature: this.application.secretary_signature,
-                current_status: this.application.status,
+                proposer_signature: this.application.proposer_signature ?? null,
+                dean_comment: this.application.dean_comment ?? null,
+                dean_signature: this.application.dean_signature ?? null,
+                chairman_comment: this.application.chairman_comment ?? null,
+                chairman_signature: this.application.chairman_signature ?? null,
+                president_comment: this.application.president_comment ?? null,
+                president_signature: this.application.president_signature ?? null,
+                secretary_comment: this.application.secretary_comment ?? null,
+                secretary_signature: this.application.secretary_signature ?? null,
+                current_status: this.application.status === undefined ? 1 : this.application.status,
                 next_status: null
             },
         };
     },
     mounted() {
-        this.form.organized_by = this.application.organized_by;
-        this.form.references = this.application.references;
-        this.form.relate_majors = this.application.relate_majors;
-        this.form.relate_curriculum = this.application.relate_curriculum;
-        this.application.documents.data.forEach(doc => {
-            this.form.documents.push(doc);
-        })
+        if (this.application.id !== undefined) {
+            this.form.organized_by = this.application.organized_by;
+            this.form.references = this.application.references;
+            this.form.relate_majors = this.application.relate_majors;
+            this.form.relate_curriculum = this.application.relate_curriculum;
+            this.application.documents.data.forEach(doc => {
+                this.form.documents.push(doc);
+            })
+        }
     },
     methods: {
         submit() {
-            const url = this.route('dashboard.applications.update', this.application.id);
+            let url = null;
+            let successMessage = "คุณได้เสนอชื่อการประชุมวิชาการเรียบร้อยแล้ว";
+            if (this.application.id !== undefined) {
+                url = this.route('dashboard.applications.update', this.application.id);
+            }
+            if (this.application.id === undefined) {
+                this.form._method = 'POST';
+                this.form.next_status = 2;
+                url = this.route('dashboard.applications.store');
+            }
+            if (this.form.next_status === 2) {
+                successMessage = "คุณได้เสนอชื่อการประชุมวิชาการเรียบร้อยแล้ว";
+            }
+            if (this.form.next_status === 3) {
+                successMessage = "อธิการได้ลงความเห็นเรียบร้อยแล้ว";
+            }
+            if (this.form.next_status === 4) {
+                successMessage = "ประธานคณะกรรมการได้ลงความเห็นเรียบน้อยแล้ว";
+            }
+            if (this.form.next_status === 5) {
+                successMessage = "อธิการได้ลงความเห็นเรียบน้อยแล้ว";
+            }
+            if (this.form.next_status === 6) {
+                successMessage = "เลขานุการคณะกรรมการได้ลงความเห็นเรียบน้อยแล้ว";
+            }
             router.post(url, this.form, {
                 onSuccess: async () => {
                     const result = await this.$swal.fire({
                         title: "สำเร็จ",
-                        text: "คุณได้เสนอชื่อการประชุมวิชาการเรียบร้อยแล้ว",
+                        text: successMessage,
                         icon: "success",
                         confirmButtonText: "ตกลง"
                     });
                     if (result.isConfirmed) {
                         window.location.reload();
+                    }
+                },
+                onError: () => {
+                    if (this.application.id === undefined) {
+                        this.form.proposer_signature = null;
+                    }
+                    if (this.form.next_status === 2) {
+                        this.form.proposer_signature = null;
+                    }
+                    if (this.form.next_status === 3) {
+                        this.form.dean_signature = null;
+                    }
+                    if (this.form.next_status === 4) {
+                        this.form.chairman_signature = null;
+                    }
+                    if (this.form.next_status === 5) {
+                        this.form.president_signature = null;
+                    }
+                    if (this.form.next_status === 6) {
+                        this.form.secretary_signature = null;
                     }
                 }
             });

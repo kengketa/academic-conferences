@@ -4,7 +4,9 @@ namespace App\Actions\Dashboard;
 
 use App\Models\Application;
 use App\Models\Subject;
+use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 
 class SaveApplicationAction
 {
@@ -32,6 +34,29 @@ class SaveApplicationAction
         $this->application->secretary_comment = $data['secretary_comment'] ?? null;
         $this->application->secretary_signature = $data['secretary_signature'] ?? null;
         $this->application->status = $data['next_status'];
+
+        if ($this->application->id === null) {
+            $this->application->status = 2;
+            $this->application->proposed_by = Auth::id();
+            $this->application->proposed_at = Carbon::now();
+        }
+
+        if ($data['next_status'] === 3) {
+            $this->application->dean_commented_by = Auth::id();
+            $this->application->dean_commented_at = Carbon::now();
+        }
+        if ($data['next_status'] === 4) {
+            $this->application->chairman_commented_by = Auth::id();
+            $this->application->chairman_commented_at = Carbon::now();
+        }
+        if ($data['next_status'] === 5) {
+            $this->application->president_commented_by = Auth::id();
+            $this->application->president_commented_at = Carbon::now();
+        }
+        if ($data['next_status'] === 6) {
+            $this->application->secretary_commented_by = Auth::id();
+            $this->application->secretary_commented_at = Carbon::now();
+        }
         $this->application->save();
 
         $this->deleteDocuments(isset($data['to_delete_documents']) ? $data['to_delete_documents'] : []);
