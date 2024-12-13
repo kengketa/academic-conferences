@@ -53,7 +53,8 @@
                     <td>{{ application.proposer.full_name }}</td>
                     <td>{{ application.display_status }}</td>
                     <td>
-                        <div class="p-4 cursor-pointer">
+                        <Link v-if="application.status === 6"
+                              :href="route('dashboard.applications.print',application.id)" class="p-4 cursor-pointer">
                             <svg id="Layer_1" fill="#000000" height="50px" version="1.1" viewBox="0 0 303.188 303.188"
                                  width="104px" xml:space="preserve"
                                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -77,8 +78,7 @@
                                             style="fill:#A4A9AD;"></path> </g>
                                     <polygon points="219.821,50.525 270.346,50.525 219.821,0 "
                                              style="fill:#D1D3D3;"></polygon> </g> </g></svg>
-                        </div>
-
+                        </Link>
                     </td>
                 </tr>
                 </tbody>

@@ -92,7 +92,6 @@ class ApplicationController extends Controller
             ->toArray();
         return Inertia::render('Dashboard/Application/Edit')->with([
             'application' => $applicationData,
-
         ]);
     }
 
@@ -103,5 +102,20 @@ class ApplicationController extends Controller
     ) {
         $action->execute($application, $request->validated());
         return redirect()->back()->with('success', 'Application updated successfully.');
+    }
+
+    public function print(Application $application)
+    {
+        $applicationData = fractal($application, new ApplicationTransformer())
+            ->includeProposer()
+            ->includeDean()
+            ->includeChairMan()
+            ->includePresident()
+            ->includeSecretary()
+            ->includeDocuments()
+            ->toArray();
+        return Inertia::render('Dashboard/Application/Print')->with([
+            'application' => $applicationData,
+        ]);
     }
 }

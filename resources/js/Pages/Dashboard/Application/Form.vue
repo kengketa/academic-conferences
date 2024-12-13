@@ -230,7 +230,7 @@
                             <div v-if="form.documents.length > 0" class="flex gap-2">
                                 <div v-for="(doc,index) in form.documents" :key="index"
                                      class="w-40 h-40 border flex flex-col pb-2 relative">
-                                    <div class="h-24 flex items-center justify-center">
+                                    <a :href="doc.url" class="h-24 flex items-center justify-center" target="_blank">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5"
                                              viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -238,7 +238,7 @@
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"/>
                                         </svg>
-                                    </div>
+                                    </a>
                                     <div class="text-xs text-center leading-4 mt-2">
                                         <p>{{ doc.name }}</p>
                                     </div>

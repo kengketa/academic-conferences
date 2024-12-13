@@ -21,6 +21,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('dashboard')->as('dashboard.')->group(function () {
         Route::get('/', [PageController::class, 'dashboard'])->name('index');
         Route::resource('applications', ApplicationController::class);
+        Route::get('applications/{application}/print', [ApplicationController::class, 'print'])
+            ->name('applications.print');
 
 //        Route::resource('performances', PerformanceController::class);
 //        Route::post('performances/{performance}/toggle-publish', [PerformanceController::class, 'togglePublish'])

@@ -9,17 +9,17 @@ class CreateOrUpdateApplicationRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string'],
             'type' => ['required', 'string', 'in:local,international'],
             'number_of_seminar_done' => ['required', 'integer', 'min:0'],
             'organized_by' => ['required', 'array', 'min:1'],
-            'organized_by.*' => ['string', 'max:255'],
+            'organized_by.*' => ['string'],
             'references' => ['required', 'array'],
             'references.*' => ['string', 'max:255'],
             'relate_majors' => ['required', 'array'],
             'relate_majors.*' => ['string', 'max:255'],
             'relate_curriculum' => ['required', 'array'],
-            'relate_curriculum.*' => ['string', 'max:255'],
+            'relate_curriculum.*' => ['string'],
             'other_info' => ['nullable', 'string'],
             'proposer_signature' => ['required', 'string'],
             'dean_comment' => ['nullable', 'string'],
