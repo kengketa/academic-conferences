@@ -274,7 +274,7 @@
             <hr class="border-2 my-4">
             <section class="space-y-4 ">
                 <h2 class="text-lg font-semibold mb-3">ส่วนที่ 3 การพิจารณา</h2>
-                <div class="mb-4">
+                <div v-if="application.status >=2" class="mb-4">
                     <label class="block text-sm font-medium">
                         3.1) ความเห็นคณบดี
                     </label>
@@ -286,17 +286,21 @@
                     </div>
                     <p class="text-red-500 text-sm">{{ $page.props.errors.dean_comment }}</p>
                 </div>
-                <div class="grid grid-cols-12">
+                <div v-if="application.status >=2" class="grid grid-cols-12">
                     <div class="col-span-8"></div>
                     <div class="col-span-4 flex flex-col items-center justify-center">
-                        <button class="btn btn-primary btn-sm ml-4" type="button">ลงชื่อ</button>
+                        <SignatureModal v-model="showDeanSignaturePad" @submit="handleSubmitDeanSignature"/>
+                        <img :src="form.dean_signature" class="w-36 h-36">
+                        <button class="btn btn-primary btn-sm ml-4" type="button" @click="showDeanSignaturePad=true">
+                            ลงชื่อ
+                        </button>
                         <p>ลงชื่อ ..................................</p>
                         <p>{{ application.dean ? application.dean.full_name : '...' }}</p>
                         <p>คณะบดี{{ application.department.name }}</p>
                         <p>วันที่ {{ application.dean_commented_at }}</p>
                     </div>
                 </div>
-                <div class="mb-4">
+                <div v-if="application.status >=3" class="mb-4">
                     <label class="block text-sm font-medium">
                         3.2) ความเห็นคณะกรรมการติดตามภาระงานวิจัยและงานวิชาการอื่นของคณาจารย์
                     </label>
@@ -308,17 +312,22 @@
                     </div>
                     <p class="text-red-500 text-sm">{{ $page.props.errors.chairman_comment }}</p>
                 </div>
-                <div class="grid grid-cols-12">
+                <div v-if="application.status >=3" class="grid grid-cols-12">
                     <div class="col-span-8"></div>
                     <div class="col-span-4 flex flex-col items-center">
-                        <button class="btn btn-primary btn-sm ml-4" type="button">ลงชื่อ</button>
+                        <SignatureModal v-model="showChairmanSignaturePad" @submit="handleSubmitChairmanSignature"/>
+                        <img :src="form.chairman_signature" class="w-36 h-36">
+                        <button class="btn btn-primary btn-sm ml-4" type="button"
+                                @click="showChairmanSignaturePad=true">
+                            ลงชื่อ
+                        </button>
                         <p>ลงชื่อ ..................................</p>
                         <p>ผู้ช่วยศาสตราจารย์ ดร. กมลวรรณ วรรณธนัง</p>
                         <p>ประธานคณะกรรมการติดตามภาระงานวิจัยและงานวิชาการอื่นของคณาจารย์</p>
                         <p>วันที่ {{ application.chairman_commented_at ?? '....................' }}</p>
                     </div>
                 </div>
-                <div class="mb-4">
+                <div v-if="application.status >=4" class="mb-4">
                     <label class="block text-sm font-medium">
                         3.3) ความเห็นอธิการบดี
                     </label>
@@ -330,17 +339,22 @@
                     </div>
                     <p class="text-red-500 text-sm">{{ $page.props.errors.president_comment }}</p>
                 </div>
-                <div class="grid grid-cols-12">
+                <div v-if="application.status >=4" class="grid grid-cols-12">
                     <div class="col-span-8"></div>
                     <div class="col-span-4 flex flex-col items-center justify-center">
-                        <button class="btn btn-primary btn-sm ml-4" type="button">ลงชื่อ</button>
+                        <SignatureModal v-model="showPresidentSignaturePad" @submit="handleSubmitPresidentSignature"/>
+                        <img :src="form.president_signature" class="w-36 h-36">
+                        <button class="btn btn-primary btn-sm ml-4" type="button"
+                                @click="showPresidentSignaturePad=true">
+                            ลงชื่อ
+                        </button>
                         <p>ลงชื่อ ..................................</p>
                         <p>รองศาสตราจารย์ ดร.ชูสิทธิ์ ประดับเพ็ชร์</p>
                         <p>อธิการบดี</p>
                         <p>วันที่ {{ application.president_commented_at ?? '....................' }}</p>
                     </div>
                 </div>
-                <div class="mb-4">
+                <div v-if="application.status >=5" class="mb-4">
                     <label class="block text-sm font-medium">
                         3.4) มติที่ประชุมคณะกรรมการพิจารณาตำแหน่งทางวิชาการ (กพว.)
                     </label>
@@ -352,10 +366,15 @@
                     </div>
                     <p class="text-red-500 text-sm">{{ $page.props.errors.secretary_comment }}</p>
                 </div>
-                <div class="grid grid-cols-12">
+                <div v-if="application.status >=5" class="grid grid-cols-12">
                     <div class="col-span-8"></div>
                     <div class="col-span-4 flex flex-col items-center justify-center">
-                        <button class="btn btn-primary btn-sm ml-4" type="button">ลงชื่อ</button>
+                        <SignatureModal v-model="showSecretarySignaturePad" @submit="handleSubmitSecretarySignature"/>
+                        <img :src="form.secretary_signature" class="w-36 h-36">
+                        <button class="btn btn-primary btn-sm ml-4" type="button"
+                                @click="showSecretarySignaturePad=true">
+                            ลงชื่อ
+                        </button>
                         <p>ลงชื่อ ..................................</p>
                         <p>ผู้ช่วยศาสตราจารย์ ดร. กมลวรรณ วรรณธนัง</p>
                         <p>เลขานุการคณะกรรมการพิจารณาตำแหน่งทางวิชาการ</p>
@@ -383,6 +402,10 @@ export default {
     data() {
         return {
             showProposerSignaturePad: false,
+            showDeanSignaturePad: false,
+            showChairmanSignaturePad: false,
+            showPresidentSignaturePad: false,
+            showSecretarySignaturePad: false,
             form: {
                 _method: 'PATCH',
                 name: this.application.name,
@@ -396,14 +419,14 @@ export default {
                 documents: [],
                 to_delete_documents: [],
                 proposer_signature: this.application.proposer_signature,
-                dean_comment: "",
-                dean_signature: "",
-                chairman_comment: "",
-                chairman_signature: "",
-                president_comment: "",
-                president_signature: "",
-                secretary_comment: "",
-                secretary_signature: "",
+                dean_comment: this.application.dean_comment,
+                dean_signature: this.application.dean_signature,
+                chairman_comment: this.application.chairman_comment,
+                chairman_signature: this.application.chairman_signature,
+                president_comment: this.application.president_comment,
+                president_signature: this.application.president_signature,
+                secretary_comment: this.application.secretary_comment,
+                secretary_signature: this.application.secretary_signature,
                 current_status: this.application.status,
                 next_status: null
             },
@@ -419,9 +442,7 @@ export default {
         })
     },
     methods: {
-        handleSubmitProposerSignature(image) {
-            this.form.proposer_signature = image;
-            this.form.next_status = 2;
+        submit() {
             const url = this.route('dashboard.applications.update', this.application.id);
             router.post(url, this.form, {
                 onSuccess: async () => {
@@ -436,6 +457,31 @@ export default {
                     }
                 }
             });
+        },
+        handleSubmitProposerSignature(image) {
+            this.form.proposer_signature = image;
+            this.form.next_status = 2;
+            this.submit();
+        },
+        handleSubmitDeanSignature(image) {
+            this.form.dean_signature = image;
+            this.form.next_status = 3;
+            this.submit();
+        },
+        handleSubmitChairmanSignature(image) {
+            this.form.chairman_signature = image;
+            this.form.next_status = 4;
+            this.submit();
+        },
+        handleSubmitPresidentSignature(image) {
+            this.form.president_signature = image;
+            this.form.next_status = 5;
+            this.submit();
+        },
+        handleSubmitSecretarySignature(image) {
+            this.form.secretary_signature = image;
+            this.form.next_status = 6;
+            this.submit();
         },
         handleRemoveDocument(index) {
             if (this.form.documents[index].id !== undefined) {
