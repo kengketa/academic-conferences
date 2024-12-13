@@ -42,6 +42,7 @@ class ApplicationController extends Controller
             ->includeChairMan()
             ->includePresident()
             ->includeSecretary()
+            ->includeDocuments()
             ->toArray();
         return Inertia::render('Dashboard/Application/Edit')->with([
             'application' => $applicationData,

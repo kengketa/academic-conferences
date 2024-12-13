@@ -5,10 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Application extends Model
+class Application extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
+
+    public const MEDIA_COLLECTION_DOCUMENTS = 'documents';
 
     protected $fillable = [
         'name',
@@ -53,6 +60,11 @@ class Application extends Model
         'secretary_commented_at' => 'datetime',
     ];
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(self::MEDIA_COLLECTION_DOCUMENTS);
+    }
+
     public function scopeFilter(Builder $query, array $filters): void
     {
         if (isset($filters['tab']) && $filters['tab'] !== 'all' && $filters['tab'] === 'pending') {
@@ -70,7 +82,7 @@ class Application extends Model
             });
         }
     }
-    
+
     public function proposedBy()
     {
         return $this->belongsTo(User::class, 'proposed_by');

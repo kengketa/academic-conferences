@@ -10,7 +10,7 @@
                         <textarea v-model="form.name" class="textarea textarea-bordered w-full" placeholder="name"
                                   rows="4"></textarea>
                     </div>
-
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.name }}</p>
                 </div>
                 <div class="mb-4">
                     <p class="text-sm font-medium">2) เป็นการประชุมวิชาการ</p>
@@ -26,6 +26,7 @@
                             <span class="ml-2">ระดับนานาชาติ</span>
                         </label>
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.type }}</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium">3) จัดโดยสมาคมวิชาชีพ</label>
@@ -64,18 +65,19 @@
                             </svg>
                         </button>
                     </div>
-
-
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.organized_by }}</p>
                 </div>
-                <div class="mb-4 flex gap-2 items-center">
-                    <label class="block text-sm font-medium" for="conference-count">
-                        4) จำนวนครั้งของการจัดงานประชุมวิชาการที่ผ่านมา
-                    </label>
-                    <input id="conference-count" v-model="form.number_of_seminar_done"
-                           class="input input-bordered w-20 input-sm" type="number"/>
-                    <p>ครั้ง</p>
+                <div class="mb-4 ">
+                    <div class="flex gap-2 items-center">
+                        <label class="block text-sm font-medium" for="conference-count">
+                            4) จำนวนครั้งของการจัดงานประชุมวิชาการที่ผ่านมา
+                        </label>
+                        <input id="conference-count" v-model="form.number_of_seminar_done"
+                               class="input input-bordered w-20 input-sm" type="number"/>
+                        <p>ครั้ง</p>
+                    </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.number_of_seminar_done }}</p>
                 </div>
-
                 <div class="mb-4">
                     <label class="block text-sm font-medium">5) เอกสารหลักฐาน</label>
                     <div class="">
@@ -113,6 +115,7 @@
                             </svg>
                         </button>
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.references }}</p>
                 </div>
             </section>
             <section class="space-y-4">
@@ -155,6 +158,7 @@
                             </svg>
                         </button>
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.relate_majors }}</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium">
@@ -185,7 +189,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                     <div class="flex w-full justify-end mt-2">
@@ -197,6 +200,7 @@
                             </svg>
                         </button>
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.relate_curriculum }}</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium">
@@ -207,6 +211,7 @@
                                   placeholder="อื่นๆ"
                                   rows="4"></textarea>
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.other_info }}</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium">
@@ -248,6 +253,7 @@
                         <input ref="documentInputRef" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx"
                                class="hidden" type="file" @change="handleSubjectDocument">
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.documents }}</p>
                 </div>
             </section>
             <div class="w-full grid grid-cols-12">
@@ -278,6 +284,7 @@
                                   rows="6">
                         </textarea>
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.dean_comment }}</p>
                 </div>
                 <div class="grid grid-cols-12">
                     <div class="col-span-8"></div>
@@ -299,6 +306,7 @@
                                   rows="6">
                         </textarea>
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.chairman_comment }}</p>
                 </div>
                 <div class="grid grid-cols-12">
                     <div class="col-span-8"></div>
@@ -320,6 +328,7 @@
                                   rows="6">
                         </textarea>
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.president_comment }}</p>
                 </div>
                 <div class="grid grid-cols-12">
                     <div class="col-span-8"></div>
@@ -341,6 +350,7 @@
                                   rows="6">
                         </textarea>
                     </div>
+                    <p class="text-red-500 text-sm">{{ $page.props.errors.secretary_comment }}</p>
                 </div>
                 <div class="grid grid-cols-12">
                     <div class="col-span-8"></div>
@@ -404,6 +414,9 @@ export default {
         this.form.references = this.application.references;
         this.form.relate_majors = this.application.relate_majors;
         this.form.relate_curriculum = this.application.relate_curriculum;
+        this.application.documents.data.forEach(doc => {
+            this.form.documents.push(doc);
+        })
     },
     methods: {
         handleSubmitProposerSignature(image) {

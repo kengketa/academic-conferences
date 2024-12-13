@@ -34,28 +34,29 @@ class SaveApplicationAction
         $this->application->status = $data['next_status'];
         $this->application->save();
 
-//        $this->deleteDocuments(isset($data['to_delete_documents']) ? $data['to_delete_documents'] : []);
-//        $this->uploadSubjectDocuments($data['documents']);
+        $this->deleteDocuments(isset($data['to_delete_documents']) ? $data['to_delete_documents'] : []);
+        $this->uploadDocuments($data['documents']);
 
         return $this->application;
     }
 
-//    private function deleteDocuments($documents)
-//    {
-//        foreach ($documents as $document) {
-//            $doc = $this->subject->getMedia(Subject::MEDIA_COLLECTION_DOCUMENTS)->where('id', $document['id'])->first();
-//            if ($doc) {
-//                $doc->delete();
-//            }
-//        }
-//    }
+    private function deleteDocuments($documents)
+    {
+        foreach ($documents as $document) {
+            $doc = $this->application->getMedia(Application::MEDIA_COLLECTION_DOCUMENTS)
+                ->where('id', $document['id'])->first();
+            if ($doc) {
+                $doc->delete();
+            }
+        }
+    }
 
-//    private function uploadSubjectDocuments($documents): void
-//    {
-//        foreach ($documents as $document) {
-//            if ($document instanceof UploadedFile) {
-//                $this->subject->addMedia($document)->toMediaCollection(Subject::MEDIA_COLLECTION_DOCUMENTS);
-//            }
-//        }
-//    }
+    private function uploadDocuments($documents): void
+    {
+        foreach ($documents as $document) {
+            if ($document instanceof UploadedFile) {
+                $this->application->addMedia($document)->toMediaCollection(Application::MEDIA_COLLECTION_DOCUMENTS);
+            }
+        }
+    }
 }

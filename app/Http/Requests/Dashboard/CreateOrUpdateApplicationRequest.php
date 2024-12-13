@@ -8,7 +8,7 @@ class CreateOrUpdateApplicationRequest extends FormRequest
 {
     public function rules()
     {
-        return [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'in:local,international'],
             'number_of_seminar_done' => ['required', 'integer', 'min:0'],
@@ -32,8 +32,13 @@ class CreateOrUpdateApplicationRequest extends FormRequest
             'secretary_signature' => ['nullable', 'string'],
             'current_status' => ['required', 'in:2,3,4,5,6'],
             'next_status' => ['required', 'in:2,3,4,5,6'],
-            'documents' => ['nullable', 'array'],
-            'documents.*' => ['file', 'mimes:pdf,doc,docx,jpg,png', 'max:102400'],
+            'documents' => ['required', 'array', 'min:1'],
+            'documents.*' => ['required', 'mimes:pdf,ppt,pptx,doc,docx,xls,xlsx', 'max:102400'],
+            'to_delete_documents.*' => ['nullable']
         ];
+        if (request()->method == 'PATCH') {
+            $rules['documents.*'] = ['nullable'];
+        }
+        return $rules;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Transformers;
 
+use App\Models\Subject;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 use App\Models\Application;
@@ -14,8 +15,8 @@ class ApplicationTransformer extends TransformerAbstract
         'chairman',
         'president',
         'secretary',
+        'documents'
     ];
-
 
     public function transform(Application $application): array
     {
@@ -108,5 +109,11 @@ class ApplicationTransformer extends TransformerAbstract
             return null;
         }
         return $this->item($application->secretaryCommentedBy, new UserTransformer());
+    }
+
+    public function includeDocuments(Application $application)
+    {
+        $documents = $application->getMedia(Application::MEDIA_COLLECTION_DOCUMENTS);
+        return $this->collection($documents, new DocumentTransformer());
     }
 }
