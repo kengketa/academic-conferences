@@ -89,10 +89,10 @@ export default {
         availableNavs() {
             const navs = [];
             navs.push(this.navs.dashboard);
-            navs.push(this.navs.users);
+            if (this.$page.props.user.roles.some(role => role.name === 'admin')) {
+                navs.push(this.navs.users);
+            }
             navs.push(this.navs.applications);
-
-            //navs.push(this.navs.performances);
             return navs;
         }
     },

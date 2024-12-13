@@ -1,6 +1,6 @@
 <template>
     <Layout>
-        <div class="w-full flex gap-2 items-center">
+        <div class="w-full flex gap-2 items-center justify-between">
             <div>
                 <label class="input input-bordered flex items-center gap-2">
                     <input ref="search" v-model="search" class="grow" placeholder="Search" type="text"/>
@@ -16,7 +16,7 @@
                     </svg>
                 </label>
             </div>
-            <div class="tabs tabs-bordered w-1/2 font-bold" role="tablist">
+            <div class="tabs tabs-bordered w-full font-bold" role="tablist">
                 <input v-model="filterTab" :aria-label="'เสนอทั้งหมด('+totalApplicationCount+')'" class="tab"
                        name="filter_tab" role="tab"
                        type="radio" value="all"/>
@@ -26,6 +26,9 @@
                 <input v-model="filterTab" :aria-label="'รอดำเนินการ('+pendingApplicationCount+')'" class="tab"
                        name="filter_tab" role="tab"
                        type="radio" value="pending"/>
+            </div>
+            <div class="w-full flex justify-end pr-2">
+                <Link :href="route('dashboard.applications.create')" class="btn btn-primary">Create</Link>
             </div>
         </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-8">
