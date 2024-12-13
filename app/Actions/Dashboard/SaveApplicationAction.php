@@ -3,6 +3,7 @@
 namespace App\Actions\Dashboard;
 
 use App\Models\Application;
+use App\Models\Major;
 use App\Models\Subject;
 use App\Models\User;
 use Carbon\Carbon;
@@ -96,17 +97,22 @@ class SaveApplicationAction
             case 2:
                 Mail::to($this->application->proposedBy->email)->send(new ApplicationUpdated($this->application));
             case 3:
-//                $departmentId = $this->application->major->department->id;
-//                $dean = User::whereHas('major.department', function ($query) use ($departmentId) {
-//                    $query->where('id', $departmentId);
-//                });
-//                Mail::to($dean->email)->send(new ApplicationUpdated($this->application));
+                $departmentId = $this->application->proposedBy->major->department_id;
+                $majorsInTheDepartment = Major::where('department_id', $departmentId)->pluck('id')->toArray();
+                $dean = User::whereIn('major_id', $majorsInTheDepartment)
+                    ->whereHas('roles', function ($query) {
+                        $query->where('name', 'dean');
+                    })
+                    ->first();
+                if ($dean) {
+                    Mail::to($dean->email)->send(new ApplicationUpdated($this->application));
+                }
             case 4:
-                Mail::to('email doctor kamonwan')->send(new ApplicationUpdated($this->application));
+                Mail::to('kaminwan@mail.com')->send(new ApplicationUpdated($this->application));
             case 5:
-                Mail::to('email president')->send(new ApplicationUpdated($this->application));
+                Mail::to('president@mail.com')->send(new ApplicationUpdated($this->application));
             case 6:
-                Mail::to('email doctor kamonwan')->send(new ApplicationUpdated($this->application));
+                Mail::to($this->application->proposedBy->email)->send(new ApplicationUpdated($this->application));
         }
     }
 }
