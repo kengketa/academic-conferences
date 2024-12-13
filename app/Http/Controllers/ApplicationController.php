@@ -8,6 +8,7 @@ use App\Http\Transformers\ApplicationTransformer;
 use App\Models\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -16,7 +17,7 @@ class ApplicationController extends Controller
     public function index(Request $request)
     {
         $filters = $request->only('tab', 'search');
-        $applications = Application::filter($filters)->paginate(30);
+        $applications = Application::filter($filters)->orderBy('updated_at', 'desc')->paginate(30);
         $applicationData = fractal($applications, new ApplicationTransformer())
             ->includeProposer()
             ->includeDean()
@@ -28,6 +29,39 @@ class ApplicationController extends Controller
         $pendingApplicationCount = Application::where('status', '<', 6)->count();
         $doneApplicationCount = Application::where('status', '=', 6)->count();
 
+        $user = Auth::user();
+        $userDepartmentId = $user?->major?->department?->id;
+        if ($userDepartmentId && $user->roles->contains('name', 'dean')) {
+            $pendingApplicationCount = Application::whereHas('proposedBy', function ($query) use ($userDepartmentId) {
+                $query->whereHas('major', function ($query) use ($userDepartmentId) {
+                    $query->where('department_id', $userDepartmentId);
+                });
+            })->where('status', '<', 6)->count();
+
+            $doneApplicationCount = Application::whereHas('proposedBy', function ($query) use ($userDepartmentId) {
+                $query->whereHas('major', function ($query) use ($userDepartmentId) {
+                    $query->where('department_id', $userDepartmentId);
+                });
+            })->where('status', '=', 6)->count();
+        }
+        if ($user->roles->contains('name', 'proposer') &&
+            !$user->roles->contains('name', 'dean') &&
+            !$user->roles->contains('name', 'chairman') &&
+            !$user->roles->contains('name', 'president') &&
+            !$user->roles->contains('name', 'secretary')
+        ) {
+            $pendingApplicationCount = Application::whereHas('proposedBy', function ($query) use ($userDepartmentId) {
+                $query->whereHas('major', function ($query) use ($userDepartmentId) {
+                    $query->where('department_id', $userDepartmentId);
+                });
+            })->where('proposed_by', Auth::id())->where('status', '<', 6)->count();
+
+            $doneApplicationCount = Application::whereHas('proposedBy', function ($query) use ($userDepartmentId) {
+                $query->whereHas('major', function ($query) use ($userDepartmentId) {
+                    $query->where('department_id', $userDepartmentId);
+                });
+            })->where('proposed_by', Auth::id())->where('status', '=', 6)->count();
+        }
         return Inertia::render('Dashboard/Application/Index')->with([
             'applications' => $applicationData,
             'pendingApplicationCount' => $pendingApplicationCount,

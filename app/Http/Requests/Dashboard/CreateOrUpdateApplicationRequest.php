@@ -48,7 +48,7 @@ class CreateOrUpdateApplicationRequest extends FormRequest
         if ($this->input('next_status') == 5) {
             $rules['president_comment'] = ['required', 'string'];
         }
-        if ($this->input('next_status') == 5) {
+        if ($this->input('next_status') == 6) {
             $rules['secretary_comment'] = ['required', 'string'];
         }
         return $rules;

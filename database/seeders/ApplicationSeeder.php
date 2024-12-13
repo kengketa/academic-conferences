@@ -13,6 +13,10 @@ class ApplicationSeeder extends Seeder
      */
     public function run(): void
     {
-        Application::factory()->count(20)->create();
+        $applications = Application::factory()->count(50)->create();
+        foreach ($applications as $application) {
+            $application->addMedia(storage_path('seed/mock_subject_pdf.pdf'))->preservingOriginal()
+                ->toMediaCollection(Application::MEDIA_COLLECTION_DOCUMENTS);
+        }
     }
 }

@@ -17,7 +17,7 @@
                 </label>
             </div>
             <div class="tabs tabs-bordered w-1/2 font-bold" role="tablist">
-                <input v-model="filterTab" :aria-label="'ผู้เสนอทั้งหมด('+totalApplicationCount+')'" class="tab"
+                <input v-model="filterTab" :aria-label="'เสนอทั้งหมด('+totalApplicationCount+')'" class="tab"
                        name="filter_tab" role="tab"
                        type="radio" value="all"/>
                 <input v-model="filterTab" :aria-label="'อนุมัติ('+ doneApplicationCount+')'" class="tab"
