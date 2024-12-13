@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Dashboard\SaveApplicationAction;
+use App\Http\Requests\Dashboard\CreateOrUpdateApplicationRequest;
 use App\Http\Transformers\ApplicationTransformer;
 use App\Models\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class ApplicationController extends Controller
@@ -44,5 +47,14 @@ class ApplicationController extends Controller
             'application' => $applicationData,
 
         ]);
+    }
+
+    public function update(
+        CreateOrUpdateApplicationRequest $request,
+        Application $application,
+        SaveApplicationAction $action
+    ) {
+        $action->execute($application, $request->validated());
+        return redirect()->back()->with('success', 'Application updated successfully.');
     }
 }

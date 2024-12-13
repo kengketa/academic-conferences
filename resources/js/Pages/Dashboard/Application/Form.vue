@@ -17,7 +17,7 @@
                     <div class="flex items-center gap-4">
                         <label class="flex items-center">
                             <input v-model="form.type" class="radio radio-primary" type="radio"
-                                   value="national"/>
+                                   value="local"/>
                             <span class="ml-2">ระดับชาติ</span>
                         </label>
                         <label class="flex items-center">
@@ -359,6 +359,7 @@
 
 <script>
 import SignatureModal from "@/Pages/Components/SignatureModal.vue";
+import {router} from '@inertiajs/vue3'
 
 export default {
     name: 'ApplicationForm',
@@ -373,6 +374,7 @@ export default {
         return {
             showProposerSignaturePad: false,
             form: {
+                _method: 'PATCH',
                 name: this.application.name,
                 type: this.application.type,
                 number_of_seminar_done: this.application.number_of_seminar_done,
@@ -405,10 +407,22 @@ export default {
     },
     methods: {
         handleSubmitProposerSignature(image) {
-            console.log('-----------------');
-            console.log(image);
-            console.log('-----------------');
             this.form.proposer_signature = image;
+            this.form.next_status = 2;
+            const url = this.route('dashboard.applications.update', this.application.id);
+            router.post(url, this.form, {
+                onSuccess: async () => {
+                    const result = await this.$swal.fire({
+                        title: "สำเร็จ",
+                        text: "คุณได้เสนอชื่อการประชุมวิชาการเรียบร้อยแล้ว",
+                        icon: "success",
+                        confirmButtonText: "ตกลง"
+                    });
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                }
+            });
         },
         handleRemoveDocument(index) {
             if (this.form.documents[index].id !== undefined) {
