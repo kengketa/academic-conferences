@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Transformers\UserTransformer;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -44,7 +45,7 @@ class HandleInertiaRequests extends Middleware
             $user = User::where('id', Auth::user()->id)->first();
         }
         return array_merge(parent::share($request), [
-            'user' => $user,
+            'user' => fractal($user, new UserTransformer())->toArray(),
             'isAdmin' => $user && $user->roles->count() > 0 && $user->roles->contains('name', 'admin'),
             'role' => $user && $user->role ? $user->role->name : null,
             'flash' => [

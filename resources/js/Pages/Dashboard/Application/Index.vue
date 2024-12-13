@@ -51,7 +51,7 @@
                     </td>
                     <td>{{ application.type === 'local' ? 'ระดับชาติ' : 'ระดับนานาชาติ' }}</td>
                     <td>{{ application.proposer.full_name }}</td>
-                    <td>{{ application.status === 6 ? 'อนุมัติ' : 'อยู่ระหว่างดำเนินการ' }}</td>
+                    <td>{{ application.display_status }}</td>
                     <td>
                         <div class="p-4 cursor-pointer">
                             <svg id="Layer_1" fill="#000000" height="50px" version="1.1" viewBox="0 0 303.188 303.188"

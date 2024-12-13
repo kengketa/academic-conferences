@@ -22,6 +22,7 @@ class ApplicationTransformer extends TransformerAbstract
         return [
             'id' => $application->id,
             'name' => $application->name,
+            'department' => $application->proposedBy->major->department->toArray(),
             'type' => $application->type,
             'organized_by' => $application->organized_by,
             'number_of_seminar_done' => $application->number_of_seminar_done,
@@ -31,32 +32,45 @@ class ApplicationTransformer extends TransformerAbstract
             'other_info' => $application->other_info,
             'proposed_by' => $application->proposed_by,
             'proposer_signature' => $application->proposer_signature,
-            'proposed_at' => Carbon::parse($application->proposed_at)->toIso8601String(),
+            'proposed_at' => Carbon::parse($application->proposed_at)->format('d/m/Y'),
 
             'dean_comment' => $application->dean_comment,
             'dean_signature' => $application->dean_signature,
             'dean_commented_by' => $application->dean_commented_by,
-            'dean_commented_at' => optional($application->dean_commented_at)->toIso8601String(),
+            'dean_commented_at' => optional($application->dean_commented_at)->format('d/m/Y'),
 
             'chairman_comment' => $application->chairman_comment,
             'chairman_signature' => $application->chairman_signature,
             'chairman_commented_by' => $application->chairman_commented_by,
-            'chairman_commented_at' => optional($application->chairman_commented_at)->toIso8601String(),
+            'chairman_commented_at' => optional($application->chairman_commented_at)->format('d/m/Y'),
 
             'president_comment' => $application->president_comment,
             'president_signature' => $application->president_signature,
             'president_commented_by' => $application->president_commented_by,
-            'president_commented_at' => optional($application->president_commented_at)->toIso8601String(),
+            'president_commented_at' => optional($application->president_commented_at)->format('d/m/Y'),
 
             'secretary_comment' => $application->secretary_comment,
             'secretary_signature' => $application->secretary_signature,
             'secretary_commented_by' => $application->secretary_commented_by,
-            'secretary_commented_at' => optional($application->secretary_commented_at)->toIso8601String(),
+            'secretary_commented_at' => optional($application->secretary_commented_at)->format('d/m/Y'),
 
             'status' => $application->status,
-            'created_at' => Carbon::parse($application->created_at)->toIso8601String(),
-            'updated_at' => Carbon::parse($application->updated_at)->toIso8601String(),
+            'display_status' => $this->displayStatus($application->status),
+            'created_at' => Carbon::parse($application->created_at)->format('d/m/Y'),
+            'updated_at' => Carbon::parse($application->updated_at)->format('d/m/Y'),
         ];
+    }
+
+    private function displayStatus(int $status)
+    {
+        $statusMap = [
+            2 => 'เสนอแล้ว รอความเห็นคณะบดี',
+            3 => 'คณะบดีให้ความเห็นแล้ว รอความเห็นคณะกรรมการฯ',
+            4 => 'คณะกรรมการฯให้ความเห็นแล้ว รอความเห็นอธิการบดี',
+            5 => 'อธิการบดีให้ความเห็นแล้ว รอมติที่ประชุม',
+            6 => 'อนุมัติแล้ว',
+        ];
+        return $statusMap[$status] ?? null;
     }
 
     public function includeProposer(Application $application)
