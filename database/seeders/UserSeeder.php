@@ -54,8 +54,6 @@ class UserSeeder extends Seeder
             2 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             3 => ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()], // dean
         ]);
-
-
         $chairman = User::factory()->create([
             'email' => 'kamonwan@mail.com',
             'major_id' => $randomMajorInTheSameDepartment,

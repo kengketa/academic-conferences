@@ -133,7 +133,7 @@
                         </div>
                     </section>
                 </div>
-                <div class="w-full">
+                <div class="w-full print-page">
                     <div v-for="(doc,index) in  application.documents.data ">
                         <VuePdfEmbed :source="doc.url" annotation-layer text-layer @rendered="handlePdfRender"/>
                     </div>

@@ -594,19 +594,29 @@ export default {
     },
     computed: {
         isProposer() {
+            if (this.isAdmin) return true;
             return this.$page.props.user.roles.some(role => role.name === 'proposer');
         },
         isDean() {
+            if (this.isAdmin) return true;
             return this.$page.props.user.roles.some(role => role.name === 'dean');
         },
         isChairman() {
+            if (this.isAdmin) return true;
             return this.$page.props.user.roles.some(role => role.name === 'chairman');
         },
         isPresident() {
+            if (this.isAdmin) return true;
             return this.$page.props.user.roles.some(role => role.name === 'president');
         },
         isSecretary() {
+            if (this.isAdmin) return true;
             return this.$page.props.user.roles.some(role => role.name === 'secretary');
+        },
+        isAdmin() {
+            if (this.$page.props.user.roles.some(role => role.name === 'admin')) {
+                return true;
+            }
         }
     }
 }
