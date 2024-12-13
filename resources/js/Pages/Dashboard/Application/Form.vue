@@ -253,7 +253,11 @@
             <div class="w-full grid grid-cols-12">
                 <div class="col-span-8"></div>
                 <div class="col-span-4 flex flex-col items-center justify-center">
-                    <button class="btn btn-primary btn-sm ml-4" type="button">ลงชื่อ</button>
+                    <SignatureModal v-model="showProposerSignaturePad" @submit="handleSubmitProposerSignature"/>
+                    <img :src="form.proposer_signature" class="w-36 h-36">
+                    <button class="btn btn-primary btn-sm ml-4" type="button" @click="showProposerSignaturePad=true">
+                        ลงชื่อ
+                    </button>
                     <p>ลงชื่อ ..................................</p>
                     <p>
                         ผู้เสนอ {{ application.proposer ? application.proposer.full_name : $page.props.user.full_name }}
@@ -354,8 +358,11 @@
 </template>
 
 <script>
+import SignatureModal from "@/Pages/Components/SignatureModal.vue";
+
 export default {
     name: 'ApplicationForm',
+    components: {SignatureModal},
     props: {
         application: {
             type: Object,
@@ -364,6 +371,7 @@ export default {
     },
     data() {
         return {
+            showProposerSignaturePad: false,
             form: {
                 name: this.application.name,
                 type: this.application.type,
@@ -375,6 +383,7 @@ export default {
                 other_info: this.application.other_info,
                 documents: [],
                 to_delete_documents: [],
+                proposer_signature: this.application.proposer_signature,
                 dean_comment: "",
                 dean_signature: "",
                 chairman_comment: "",
@@ -395,6 +404,12 @@ export default {
         this.form.relate_curriculum = this.application.relate_curriculum;
     },
     methods: {
+        handleSubmitProposerSignature(image) {
+            console.log('-----------------');
+            console.log(image);
+            console.log('-----------------');
+            this.form.proposer_signature = image;
+        },
         handleRemoveDocument(index) {
             if (this.form.documents[index].id !== undefined) {
                 this.form.to_delete_documents.push(this.form.documents[index]);
