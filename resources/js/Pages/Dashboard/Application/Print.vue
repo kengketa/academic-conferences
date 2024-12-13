@@ -1,5 +1,15 @@
 <template>
     <div class="relative bg-gray-200">
+        <input id="loadingModal" v-model="loadingModal" class="modal-toggle" type="checkbox"/>
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="text-lg font-bold">กำลังทำงาน</h3>
+                <p class="py-4 text-center">ระบบกำลัง load ไฟล์แนบทั้งหมด กรุณารอสักครู่</p>
+                <div class="w-full flex justify-center">
+                    <span class="loading loading-infinity loading-lg"></span>
+                </div>
+            </div>
+        </div>
         <div ref="printComponentRef">
             <div ref="printArea" class="print-container relative shadow-md">
                 <div class="form-container text-sm leading-5">
@@ -125,7 +135,7 @@
                 </div>
                 <div class="w-full">
                     <div v-for="(doc,index) in  application.documents.data ">
-                        <VuePdfEmbed :source="doc.url" annotation-layer text-layer/>
+                        <VuePdfEmbed :source="doc.url" annotation-layer text-layer @rendered="handlePdfRender"/>
                     </div>
                 </div>
             </div>
@@ -158,14 +168,23 @@ export default {
         }
     },
     data() {
-        return {}
+        return {
+            loadingModal: true,
+            debounce: null,
+            pdfCounter: 0
+        }
     },
     mounted() {
-        nextTick(() => {
-            // this.handlePrint();
-        })
+
     },
     methods: {
+        handlePdfRender() {
+            this.pdfCounter++;
+            if (this.pdfCounter === this.application.documents.data.length) {
+                this.loadingModal = false;
+                this.handlePrint();
+            }
+        },
         handlePrint() {
             const {handlePrint} = useVueToPrint({
                 content: () => this.$refs.printComponentRef,
